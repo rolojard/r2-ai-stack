@@ -117,3 +117,4 @@ class CameraDetectionThread:
 
             time.sleep(self._frame_delay)
 
+
