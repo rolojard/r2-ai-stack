@@ -1,0 +1,7 @@
+[
+  {"event_type": "profile", "event_data": "PhotoOp"},
+  {"event_type": "mood",    "event_data": "PROUD"},
+  {"event_type": "cinematic", "event_data": "Leia_Message"},
+  {"event_type": "quick_mood", "event_data": "EXCITED"},
+  {"event_type": "profile", "event_data": "LargeCon"}
+]

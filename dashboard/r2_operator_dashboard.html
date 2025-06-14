@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>R2-D2 Operator Dashboard</title>
+  <link rel="stylesheet" href="/static/r2_dashboard.css">
+</head>
+<body>
+  <h1>R2-D2 Operator Dashboard</h1>
+
+  <div class="status-block">
+    <strong>Profile:</strong> <span id="profile">Loading…</span><br>
+    <strong>Mood:</strong>    <span id="mood">Loading…</span><br>
+    <strong>Heartbeat:</strong> <span id="heartbeat">–</span>
+  </div>
+
+  <div class="attention-state" id="attention_state_display">
+    Attention: loading…
+  </div>
+
+  <h2>Recent Actions</h2>
+  <ul id="recent_actions">
+    <li>Loading…</li>
+  </ul>
+
+  <script>
+    // Fetch and render dashboard data every 2 seconds
+    async function refreshDashboard() {
+      try {
+        // Status
+        let resp = await fetch('/r2/status');
+        let stat = await resp.json();
+        document.getElementById('profile').innerText = stat.profile;
+        document.getElementById('mood').innerText    = stat.mood;
+        document.getElementById('heartbeat').innerText = stat.heartbeat;
+
+        // Attention state
+        resp = await fetch('/r2/attention_state');
+        let att = await resp.json();
+        let el = document.getElementById('attention_state_display');
+        if (!att.attention_enabled) {
+          el.innerText = 'Disabled';
+          el.className = 'attention-state disabled';
+        } else if (att.attention_active) {
+          el.innerText = 'ACTIVE → ' + att.attention_target;
+          el.className = 'attention-state active';
+        } else {
+          el.innerText = 'Idle';
+          el.className = 'attention-state safe';
+        }
+
+        // Recent actions
+        resp = await fetch('/r2/recent_actions');
+        let actions = await resp.json();
+        let list = document.getElementById('recent_actions');
+        list.innerHTML = '';
+        for (let a of actions.recent_actions) {
+          let li = document.createElement('li');
+          li.innerText = a;
+          list.appendChild(li);
+        }
+      } catch (e) {
+        console.error('Dashboard refresh error:', e);
+      }
+    }
+
+    setInterval(refreshDashboard, 2000);
+    window.onload = refreshDashboard;
+  </script>
+</body>
+</html>

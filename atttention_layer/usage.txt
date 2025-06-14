@@ -1,0 +1,13 @@
+from r2_profile_manager import ProfileManager
+from r2_mood_manager    import MoodManager
+from attention_layer    import AttentionLayer
+from camera_detection_thread import CameraDetectionThread
+
+pm = ProfileManager()
+mm = MoodManager()
+al = AttentionLayer(pm, mm)
+ct = CameraDetectionThread(pm, al)
+
+ct.start()
+# ... later:
+ct.stop()

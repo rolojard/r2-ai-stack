@@ -1,0 +1,7 @@
+[
+  {"event_type": "profile", "event_data": "Parade"},
+  {"event_type": "mood",    "event_data": "EXCITED"},
+  {"event_type": "cinematic", "event_data": "Vader_Entrance"},
+  {"event_type": "quick_mood", "event_data": "ALERT"},
+  {"event_type": "profile", "event_data": "LargeCon"}
+]

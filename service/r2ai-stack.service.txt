@@ -1,0 +1,18 @@
+[Unit]
+Description=R2-D2 AI Show Stack
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/r2-ai-stack
+Environment="PATH=/home/ubuntu/r2-ai-stack/.venv/bin"
+ExecStart=/home/ubuntu/r2-ai-stack/run_stack.sh
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

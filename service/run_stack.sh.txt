@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# run_stack.sh — simple startup script for R2 AI Stack
+
+# adjust this path to your install location
+BASE_DIR="$HOME/r2-ai-stack"
+VENV_DIR="$BASE_DIR/.venv"
+
+cd "$BASE_DIR" || exit 1
+source "$VENV_DIR/bin/activate"
+exec python3 core_api/app.py

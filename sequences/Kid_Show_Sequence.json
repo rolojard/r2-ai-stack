@@ -1,0 +1,7 @@
+[
+  {"event_type": "profile", "event_data": "KidEvent"},
+  {"event_type": "mood",    "event_data": "HAPPY"},
+  {"event_type": "cinematic", "event_data": "Jawa_Panic"},
+  {"event_type": "mood",    "event_data": "CURIOUS"},
+  {"event_type": "profile", "event_data": "LargeCon"}
+]
