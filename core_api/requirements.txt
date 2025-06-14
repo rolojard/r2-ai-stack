@@ -4,3 +4,5 @@ torch
 torchvision
 opencv-python-headless
 pyserial
+# YOLOv8 object detection
+ultralytics
