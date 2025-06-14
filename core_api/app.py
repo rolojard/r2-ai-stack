@@ -3,8 +3,10 @@ import os
 import json
 import threading
 import time
+import cv2
 
 from flask import Flask, jsonify, request, send_from_directory
+from flask import Response, stream_with_context
 from flask_cors import CORS
 
 from r2_profile_manager      import ProfileManager
@@ -32,6 +34,9 @@ camera_thread       = CameraDetectionThread(profile_manager, attention_layer)
 # Initialize QA & TTS
 qa  = QAModule(api_key=os.getenv("OPENAI_API_KEY", None))
 tts = TTSDriver()
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
 # Start background threads as daemons
 camera_thread.start()
@@ -45,6 +50,21 @@ def log_action(msg: str):
     recent_actions.insert(0, entry)
     # keep only latest 10
     del recent_actions[10:]
+    
+def mjpeg_generator():
+    """Yield JPEG frames in multipart response."""
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            continue
+        # encode to JPEG
+        ret2, jpeg = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 60])
+        if not ret2:
+            continue
+        # yield frame
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+        time.sleep(1/5)  # 5 fps
 
 @app.route('/')
 def dashboard():
@@ -146,7 +166,12 @@ def attention_enable():
 def attention_disable():
     camera_thread.disable()
     return jsonify({'status':'ok','enabled':False})
-
+    
+@app.route('/video_feed')
+def video_feed():
+    return Response(stream_with_context(mjpeg_generator()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    
 # NEW: Ask R2 endpoint
 @app.route('/r2/ask', methods=['POST'])
 def ask_r2():
